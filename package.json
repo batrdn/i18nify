@@ -16,7 +16,7 @@
     "start": "webpack serve --open",
     "test": "jest",
     "test:coverage": "yarn test --coverage --colors",
-    "prepare": "husky install && yarn build",
+    "prepare": "husky install",
     "tsc:check": "tsc --noEmit",
     "prepublish": "yarn build",
     "release": "semantic-release"
