@@ -2,14 +2,8 @@ import { extname } from 'path';
 import { readFileSync, writeFileSync } from 'fs';
 import { FileExtensions } from '../constants/file-extensions';
 import { HtmlReplacerStrategy } from '../constants/html-replacer-strategy';
-
-const replaceAngularHTML = (source: string, word: string, translationKey: string): string => {
-  return source.replace(new RegExp(word, 'g'), `{{ '${translationKey}' | i18next }}`);
-};
-
-const replaceHTML = (_: string): string => {
-  return '';
-};
+import replaceAngularHTML from '../replacers/angular';
+import replaceHTML from '../replacers/html';
 
 const replace = (
   path: string,

@@ -10,6 +10,7 @@ import { extractHTML } from '../extractors';
 import getValidWords from '../server-utils/get-valid-words';
 import cors from 'cors';
 import replace from './replace';
+import generate from '../generator/generator';
 
 dotenv.config();
 
@@ -37,7 +38,12 @@ const startServer = async (): Promise<void> => {
 
   if (process.env.PROJECT_PATH) {
     const files = getFilesRecursively(process.env.PROJECT_PATH);
+    let currentIndex = 0;
     for (const file of files) {
+      console.log(
+        `Progress: ${((currentIndex / files.length) * 100).toFixed(2)}%. Reading file ${file}`,
+      );
+
       const data = readFileSync(file, 'utf-8');
       const extension = extname(file);
 
@@ -46,6 +52,7 @@ const startServer = async (): Promise<void> => {
       } else if (extension === FileExtensions.HTML) {
         await saveValidWords(file, extractHTML(data));
       }
+      currentIndex++;
     }
   }
 
@@ -65,6 +72,11 @@ const startServer = async (): Promise<void> => {
   app.post('/replace', (req, res) => {
     const { path, word, translation, translationKey } = req.body;
     const isReplaced = replace(path, word, translation, translationKey);
+
+    if (isReplaced) {
+      generate(word, translation, translationKey);
+    }
+
     res.send({ isReplaced });
   });
 
